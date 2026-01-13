@@ -1,0 +1,10 @@
+# Config file for 2D Lsystem exploration
+type: 2D
+axiom: A
+rules:
+  rule0:
+    ax: A
+    mut0: !!python/tuple [ABA, 1.0]
+  rule1:
+    ax: B
+    mut0: !!python/tuple [BBB, 1.0]
