@@ -39,4 +39,4 @@ class Ruleset():
         if c in self.rule_dict:
             return self.rule_dict[c].sample()
         else:
-            raise ValueError('Character not in ruleset!')
+            return c

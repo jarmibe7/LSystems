@@ -1,7 +1,7 @@
 """
 Class for 2D LSystems in Python with turtle graphics
 """
-from src.ruleset import Ruleset
+from .ruleset import Ruleset
 
 class LSystem2D():
     """
@@ -16,11 +16,10 @@ class LSystem2D():
         self.ruleset = Ruleset(rules)
 
     def process_string(self, s):
-        s_new = ""
+        out = []
         for c in s:
-            s_new = s_new + self.ruleset.replace(c)
-
-        return s_new
+            out.append(self.ruleset.replace(c))
+        return "".join(out)
 
     def generate(self, num_generations):
         curr_string = self.axiom

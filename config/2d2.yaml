@@ -1,6 +1,6 @@
 # Config file for 2D Lsystem exploration
 type: 2D
-axiom: F++F++F
+axiom: F+F----F++++++++++++++++++++++++++++++F----F+F-
 num_gen: 6
 render: true
 rules:
@@ -8,5 +8,5 @@ rules:
     ax: F
     mut0: !!python/tuple [F-F++F-F, 1.0]
 turtle:
-  distance: 0.5
+  distance: 3.0
   theta: 60
