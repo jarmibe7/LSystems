@@ -16,7 +16,7 @@ def main():
     print('*** STARTING ***\n')
     # Load config
     # ---------- CONFIG HERE ----------
-    config_name = '3d0'
+    config_name = '2d2'
     # ---------- CONFIG HERE ----------
     with open(CONFIG_PATH / f'{config_name}.yaml', "r") as f:
         config = yaml.full_load(f)

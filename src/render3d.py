@@ -5,9 +5,7 @@ import numpy as np
 import moderngl
 import glfw
 
-# =========================
-# 3D TURTLE MATH
-# =========================
+# 3D turtle + camera math
 
 def rot_x(theta):
     t = np.deg2rad(theta)
@@ -32,33 +30,6 @@ def rot_z(theta):
         [np.sin(t), np.cos(t), 0],
         [0, 0, 1]
     ])
-
-def generate_segments(code, distance, theta):
-    pos = np.zeros(3)
-    R = np.eye(3)
-    forward = np.array([0, 1, 0])
-    stack = []
-    segments = []
-
-    for c in code:
-        if c == 'F':
-            new_pos = pos + R @ forward * distance
-            segments.append((pos.copy(), new_pos.copy()))
-            pos = new_pos
-        elif c == 'f':
-            pos = pos + R @ forward * distance
-        elif c == '[':
-            stack.append((pos.copy(), R.copy()))
-        elif c == ']':
-            pos, R = stack.pop()
-        elif c == '+': R = R @ rot_z(theta)
-        elif c == '-': R = R @ rot_z(-theta)
-        elif c == '&': R = R @ rot_x(theta)
-        elif c == '^': R = R @ rot_x(-theta)
-        elif c == '/': R = R @ rot_y(theta)
-        elif c == '\\': R = R @ rot_y(-theta)
-
-    return np.array(segments, dtype=np.float32)
 
 def perspective(fov, aspect, near, far):
     f = 1.0 / np.tan(np.deg2rad(fov)/2)
@@ -85,9 +56,7 @@ def look_at(eye, target, up):
     return mat
 
 
-# =========================
-# OPENGL RENDERER
-# =========================
+# Renderer and shader
 
 VERT_SHADER = """
 #version 330
@@ -175,9 +144,7 @@ class RenderLSystem3D:
             vao.render(moderngl.LINES)
             glfw.swap_buffers(self.window)
 
-# =========================
-# 3D L-System Fly Camera Renderer
-# =========================
+# Flying in 3D renderer
 
 class RenderLSystem3DFly:
     def __init__(self, distance, theta, width=900, height=900, fov=60.0):
@@ -211,9 +178,7 @@ class RenderLSystem3DFly:
         glfw.set_cursor_pos_callback(self.window, self.mouse_callback)
         glfw.set_input_mode(self.window, glfw.CURSOR, glfw.CURSOR_DISABLED)
 
-    # =====================
-    # Mouse movement
-    # =====================
+    # Fly with mouse
     def mouse_callback(self, window, xpos, ypos):
         if self.first_mouse:
             self.lastX = xpos
@@ -236,9 +201,7 @@ class RenderLSystem3DFly:
         ], dtype=np.float32)
         self.cam_front[:] = front / np.linalg.norm(front)
 
-    # =====================
-    # Keyboard movement
-    # =====================
+    # Move with keyboard
     def process_input(self):
         window = self.window
         right = np.cross(self.cam_front, self.cam_up)
@@ -257,15 +220,33 @@ class RenderLSystem3DFly:
         if glfw.get_key(window, glfw.KEY_LEFT_SHIFT) == glfw.PRESS:
             self.cam_pos -= self.speed * self.cam_up
 
-    # =====================
-    # Generate segments from L-system
-    # =====================
     def _generate_segments(self, code):
-        return generate_segments(code, self.distance, self.theta)
+        pos = np.zeros(3)
+        R = np.eye(3)
+        forward = np.array([0, 1, 0])
+        stack = []
+        segments = []
 
-    # =====================
-    # Main draw loop
-    # =====================
+        for c in code:
+            if c == 'F':
+                new_pos = pos + R @ forward * self.distance
+                segments.append((pos.copy(), new_pos.copy()))
+                pos = new_pos
+            elif c == 'f':
+                pos = pos + R @ forward * self.distance
+            elif c == '[':
+                stack.append((pos.copy(), R.copy()))
+            elif c == ']':
+                pos, R = stack.pop()
+            elif c == '+': R = R @ rot_z(self.theta)
+            elif c == '-': R = R @ rot_z(-self.theta)
+            elif c == '&': R = R @ rot_x(self.theta)
+            elif c == '^': R = R @ rot_x(-self.theta)
+            elif c == '/': R = R @ rot_y(self.theta)
+            elif c == '\\': R = R @ rot_y(-self.theta)
+
+        return np.array(segments, dtype=np.float32)
+
     def draw(self, code):
         segments = self._generate_segments(code)
         vertices = segments.reshape(-1, 3)

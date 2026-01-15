@@ -1,5 +1,5 @@
 # Config file for 3D L-system
-type: 3D
+type: 3D_fly
 axiom: F
 num_gen: 7
 should_render: true
