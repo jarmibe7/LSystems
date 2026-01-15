@@ -39,41 +39,79 @@ class RenderLSystem2D:
         )
 
     def draw(self, code):
-        # Render a 2DLsystem
+        # Track turtle states
         state_stack = []
 
-            
+        # Initialize bounds at starting position
+        x0, y0 = self.turtle.pos()
+        xmin = xmax = x0
+        ymin = ymax = y0
 
         for i, task in enumerate(code):
-            if i % 1000 == 0:   # update camera every 20 steps
+
+            # Follow turtle during rendering
+            if i % 2000 == 0:
                 self.follow_turtle(self.turtle)
+
             if task == 'F':
+                # Randomize color + pen size
                 color = (
                     random.random(),
                     random.random(),
                     random.random()
                 )
-                size = random.random()*80
-                self.turtle.pensize(size)
                 self.turtle.pencolor(color)
+                self.turtle.pensize(random.random() * 20)
+
                 self.turtle.forward(self.distance)
+
+                # Update bounds
+                x, y = self.turtle.pos()
+                xmin = min(xmin, x)
+                xmax = max(xmax, x)
+                ymin = min(ymin, y)
+                ymax = max(ymax, y)
+
             elif task == 'B':
                 self.turtle.backward(self.distance)
+                x, y = self.turtle.pos()
+                xmin = min(xmin, x)
+                xmax = max(xmax, x)
+                ymin = min(ymin, y)
+                ymax = max(ymax, y)
+
             elif task == '[':
-                state = (self.turtle.pos(), self.turtle.heading())
-                state_stack.append(state)
+                state_stack.append((self.turtle.pos(), self.turtle.heading()))
+
             elif task == ']':
-                state = state_stack.pop()
-                self.turtle.setpos(state[0])
-                self.turtle.setheading(state[1])
+                pos, heading = state_stack.pop()
+                self.turtle.up()
+                self.turtle.setpos(pos)
+                self.turtle.setheading(heading)
+                self.turtle.down()
+
             elif task == '+':
                 self.turtle.right(self.theta)
+
             elif task == '-':
                 self.turtle.left(self.theta)
 
-        ts = turtle.getscreen()
-        # Save to EPS + PNG and run render
-        ts.getcanvas().postscript(file="output.eps")
-        img = Image.open('output.eps')
-        img.save('output.png', 'png')
+        # Zoom out before saving
+        width = xmax - xmin
+        height = ymax - ymin
+        pad = 0.1 * max(width, height)
+
+        turtle.setworldcoordinates(
+            xmin - pad, ymin - pad,
+            xmax + pad, ymax + pad
+        )
+
+        turtle.update()
+
+        screen = turtle.getscreen()
+        screen.getcanvas().postscript(file="output.eps")
+
+        img = Image.open("output.eps")
+        img.save("output.png", "png")
+
         turtle.mainloop()

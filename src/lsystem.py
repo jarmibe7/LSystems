@@ -1,11 +1,11 @@
 """
-Class for 2D LSystems in Python with turtle graphics
+Class for string-based LSystems in Python with turtle graphics
 """
 from .ruleset import Ruleset
 
-class LSystem2D():
+class LSystem():
     """
-    Simple 2D LSystem
+    Simple string-based LSystem
 
     Arg:
         axiom: System initial state

@@ -2,7 +2,7 @@
 type: 2D
 axiom: A
 num_gen: 3
-render: false
+should_render: false
 rules:
   rule0:
     ax: A

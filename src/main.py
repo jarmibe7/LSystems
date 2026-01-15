@@ -5,8 +5,9 @@ from pathlib import Path
 import yaml
 
 from .ruleset import Rule
-from .lsystem_2d import LSystem2D
-from .render import RenderLSystem2D
+from .lsystem import LSystem
+from .render2d import RenderLSystem2D
+from .render3d import RenderLSystem3D, RenderLSystem3DFly
 
 PROJECT_ROOT = Path(__file__).parent.parent
 CONFIG_PATH = PROJECT_ROOT / "config"
@@ -15,7 +16,7 @@ def main():
     print('*** STARTING ***\n')
     # Load config
     # ---------- CONFIG HERE ----------
-    config_name = '2d2'
+    config_name = '3d0'
     # ---------- CONFIG HERE ----------
     with open(CONFIG_PATH / f'{config_name}.yaml', "r") as f:
         config = yaml.full_load(f)
@@ -32,14 +33,27 @@ def main():
         rules[r['ax']] = Rule(mappings)
 
     # Create LSystem and generate
-    lsystem = LSystem2D(config['axiom'], rules)
+    lsystem = LSystem(config['axiom'], rules)
     code = lsystem.generate(config['num_gen'])
     
     # Render LSystem
-    renderer = RenderLSystem2D(config['turtle']['distance'], config['turtle']['theta'], update_freq=10)
-    renderer.draw(code)
+    if config['should_render']:
+        if config['type'] == '2D':
+            renderer = RenderLSystem2D(config['render']['distance'], config['render']['theta'], update_freq=10)
+            renderer.draw(code)
+        elif config['type'] == '3D':
+            renderer = RenderLSystem3D(config['render']['distance'], config['render']['theta'])
+            renderer.draw(code)
+        elif config['type'] == '3D_fly':
+            renderer = RenderLSystem3DFly(config['render']['distance'], config['render']['theta'])
+            renderer.draw(code)
+        else:
+            raise ValueError(f'Render type {config['type']} not supported...')
+    else:
+        print(f'Final code is: {code}')
 
-    print('\n*** STARTING ***')
+
+    print('\n*** DONE ***')
     return
 
 

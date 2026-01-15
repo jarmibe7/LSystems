@@ -2,11 +2,11 @@
 type: 2D
 axiom: F+F----F++++++++++++++++++++++++++++++F----F+F-
 num_gen: 6
-render: true
+should_render: true
 rules:
   rule0:
     ax: F
     mut0: !!python/tuple [F-F++F-F, 1.0]
-turtle:
+render:
   distance: 3.0
   theta: 60

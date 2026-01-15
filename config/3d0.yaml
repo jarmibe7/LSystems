@@ -1,0 +1,15 @@
+# Config file for 3D L-system
+type: 3D
+axiom: F
+num_gen: 7
+should_render: true
+rules:
+  rule0:
+    ax: F
+    mut0: !!python/tuple
+      - F[+&F][-^F][/F][\F]
+      - 1.0
+
+render:
+  distance: 1.0
+  theta: 25.0
