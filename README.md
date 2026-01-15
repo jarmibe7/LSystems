@@ -1,13 +1,12 @@
 # LSystem Exploration
 #### Author: Jared Berry
 
-![](output_0.png)
+![](media/output_0.png)
 
 This project was associated with ME 302: Artificial Life at Northwestern University.
 
 #### Project Description
-The goal of this project was to explore string-based LSystem generation, with both 2D and 3D rendering. To create a new rule config,
-look at the example configs in config/. Make sure to specify the config name in `main.py`.
+The goal of this project was to explore string-based LSystem generation, with both 2D and 3D rendering. To create a new rule config, look at the example configs in config/. Make sure to specify the config name in `main.py`. To see a screen recording of the output, look in the media/directory.
 
 To run, use the command:
 ```
